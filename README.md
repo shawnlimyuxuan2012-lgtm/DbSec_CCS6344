@@ -16,14 +16,14 @@ A full-stack academic assessment platform with PDPA-safe controls for students, 
 - Node.js 18+
 - SQL Server / Azure SQL
 
-### 0. Clone the repository
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/shawnlimyuxuan2012-lgtm/DbSec_CCS6344.git
 cd DbSec_CCS6344
 ```
 
-### 1. Install dependencies
+### 2. Install dependencies
 
 From the repository root:
 
@@ -31,7 +31,7 @@ From the repository root:
 npm install
 ```
 
-### 2. Database setup
+### 3. Database setup
 
 Create the database and run the SQL schema.
 
@@ -45,7 +45,7 @@ Then execute the SQL schema file located at:
 backend/config/schema.sql
 ```
 
-### 3. Backend setup
+### 4. Backend setup
 
 Create a backend environment file:
 
@@ -64,7 +64,7 @@ npm run dev
 
 Default backend URL: `http://localhost:5000`
 
-### 4. Frontend setup
+### 5. Frontend setup
 
 ```bash
 cd frontend
