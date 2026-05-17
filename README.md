@@ -1,158 +1,119 @@
-<<<<<<< HEAD
 # AssessHub - Secure Student Assessment Platform
 
-A full-stack PDPA-compliant academic assessment platform.
+A full-stack academic assessment platform with PDPA-safe controls for students, lecturers, and admins.
 
 ## Stack
+
 - **Frontend**: React 18 + Vite + Tailwind CSS + React Router v6
-- **Backend**: Node.js + Express + MSSQL (mssql package)
-- **Auth**: JWT (stored in localStorage) + bcrypt (cost 12)
+- **Backend**: Node.js + Express + Microsoft SQL Server via `mssql`
+- **Auth**: JWT + bcrypt
 - **Upload**: Multer (PDF, DOCX, ZIP, max 10MB)
 
-## Quick Start
+## Getting Started
 
-### 1. Database Setup
-```sql
--- Run in SSMS / Azure Data Studio:
-CREATE DATABASE AssessmentPlatform;
--- Then run: backend/config/schema.sql
+### Requirements
+
+- Node.js 18+
+- SQL Server / Azure SQL
+
+### 1. Install dependencies
+
+From the repository root:
+
+```bash
+npm install
 ```
 
-### 2. Backend
+### 2. Database setup
+
+Create the database and run the SQL schema.
+
+```sql
+CREATE DATABASE SecureStudentDB;
+```
+
+Then execute the SQL schema file located at:
+
+```bash
+backend/config/schema.sql
+```
+
+### 3. Backend setup
+
+Create a backend environment file:
+
 ```bash
 cd backend
-cp .env.example .env          # edit DB credentials & JWT secret
-npm install
-npm run dev                   # starts on http://localhost:5000
+cp .env.example .env
 ```
 
-### 3. Frontend
+Update the DB connection values and JWT secret.
+
+Start the backend:
+
+```bash
+npm run dev
+```
+
+Default backend URL: `http://localhost:5000`
+
+### 4. Frontend setup
+
 ```bash
 cd frontend
 npm install
-npm run dev                   # starts on http://localhost:5173
+npm run dev
 ```
 
-## Demo Accounts (password: `password123`)
-| Role     | Email                      |
-|----------|---------------------------|
-| Admin    | admin@assessment.com      |
-| Lecturer | lecturer@assessment.com   |
-| Student  | student@assessment.com    |
+Default frontend URL: `http://localhost:5173`
 
-## Project Structure
-```
-assessment-platform/
-├── backend/
-│   ├── config/
-│   │   ├── db.js               # MSSQL connection pool
-│   │   └── schema.sql          # Full T-SQL schema + seed data
-│   ├── controllers/
-│   │   ├── authController.js   # register, login, forgot/reset password
-│   │   ├── studentController.js
-│   │   ├── lecturerController.js
-│   │   └── adminController.js
-│   ├── middleware/
-│   │   ├── auth.js             # JWT verify, RBAC, audit loggers
-│   │   └── upload.js           # Multer config
-│   ├── routes/
-│   │   ├── auth.js
-│   │   ├── student.js
-│   │   ├── lecturer.js
-│   │   └── admin.js
-│   ├── uploads/                # File storage (gitignored)
-│   ├── server.js
-│   ├── .env.example
-│   └── package.json
-└── frontend/
-    ├── src/
-    │   ├── components/
-    │   │   ├── Layout.jsx       # Sidebar navigation
-    │   │   └── ProtectedRoute.jsx
-    │   ├── context/
-    │   │   └── AuthContext.jsx  # Global auth state
-    │   ├── pages/
-    │   │   ├── Landing.jsx
-    │   │   ├── PDPAPolicy.jsx
-    │   │   ├── auth/            # Login, Register, ForgotPassword
-    │   │   ├── student/         # Dashboard, Submit, History, Grades, Profile
-    │   │   ├── lecturer/        # Dashboard, Assignments, Submissions, Grading
-    │   │   └── admin/           # Dashboard, Users, Audit, Breach, Retention
-    │   ├── utils/
-    │   │   └── api.js           # Axios instance with JWT interceptor
-    │   ├── App.jsx              # All routes (React Router v6)
-    │   ├── main.jsx
-    │   └── index.css            # Tailwind + design tokens
-    ├── index.html
-    ├── vite.config.js
-    ├── tailwind.config.js
-    └── package.json
-```
+## Demo Accounts
 
-## API Endpoints
+Use the following test accounts to log in quickly:
 
-### Auth (`/api/auth`)
-| Method | Path                  | Description          |
-|--------|-----------------------|----------------------|
-| POST   | /register             | Student registration |
-| POST   | /login                | Login → JWT          |
-| POST   | /forgot-password      | Send reset token     |
-| POST   | /reset-password       | Reset with token     |
-| GET    | /logout               | Clear cookie         |
-| GET    | /me                   | Current user info    |
+- **Admin**
+  - Email: `admin@assessment.com`
+  - Password: `password123`
+- **Lecturer**
+  - Email: `lecturer@assessment.com`
+  - Password: `password123`
+- **Student**
+  - Email: `student@assessment.com`
+  - Password: `password123`
 
-### Student (`/api/student`) — requires student role
-| Method | Path                        | Description           |
-|--------|-----------------------------|-----------------------|
-| GET    | /assignments                | List all assignments  |
-| GET    | /assignments/:id            | Single assignment     |
-| POST   | /submit-assignment/:id      | Submit (multipart)    |
-| PUT    | /resubmit-assignment/:id    | Resubmit before deadline |
-| GET    | /submissions                | My submissions        |
-| GET    | /grades                     | My grades             |
-| GET    | /download-data              | PDPA data export JSON |
-| DELETE | /delete-account             | Request soft delete   |
+## Environment Variables
 
-### Lecturer (`/api/lecturer`) — requires lecturer role
-| Method | Path                        | Description           |
-|--------|-----------------------------|-----------------------|
-| GET    | /courses                    | All assignments       |
-| POST   | /assignments                | Create assignment     |
-| PUT    | /assignments/:id            | Update assignment     |
-| DELETE | /assignments/:id            | Soft delete           |
-| GET    | /submissions/:assignmentId  | View submissions      |
-| POST   | /grades                     | Enter grade           |
-| PUT    | /grades/:id                 | Update grade          |
+Copy `backend/.env.example` to `backend/.env` and fill in values.
 
-### Admin (`/api/admin`) — requires admin role
-| Method | Path               | Description             |
-|--------|--------------------|-------------------------|
-| GET    | /users             | All users               |
-| POST   | /users             | Create user             |
-| PUT    | /users/:id         | Update user             |
-| DELETE | /users/:id         | Soft delete user        |
-| GET    | /audit-logs        | General + grade logs    |
-| POST   | /breach-notify     | Send breach notification|
-| DELETE | /purge-records     | PDPA data purge         |
+Required values:
 
-## Security Features
-- bcrypt password hashing (cost factor 12)
-- JWT authentication with 7-day expiry
-- Role-based access control (student / lecturer / admin)
-- Comprehensive audit logging (all actions + grade access)
-- File type & size validation (PDF, DOCX, ZIP ≤ 10MB)
-- Soft deletes (no hard data deletion without admin action)
-- PDPA: consent on registration, data download, deletion request
+- `PORT`
+- `NODE_ENV`
+- `JWT_SECRET`
+- `JWT_EXPIRES_IN`
+- `DB_SERVER`
+- `DB_PORT`
+- `DB_DATABASE`
+- `DB_USER`
+- `DB_PASSWORD`
+- `DB_ENCRYPT`
+- `DB_TRUST_CERT`
+- `SQL_AUDIT_FILEPATH`
+- `CLIENT_URL`
+- `MAX_FILE_SIZE`
+- `UPLOAD_PATH`
 
-## PDPA Compliance
-- Mandatory consent checkbox on registration
-- "Download My Data" — JSON export of all user data
-- "Request Account Deletion" — soft-delete workflow
-- Admin audit log page for grade access review
-- Breach notification page (simulated via console.log in dev)
-- Data retention purge with configurable period
-- PDPA Policy page at `/pdpa-policy`
-=======
-# DbSec_CCS6344
-Database Security
->>>>>>> 8010fd2939c75082d2a806598434ac476557a7c1
+## Notes
+
+- Backend health check: `http://localhost:5000/api/health`
+- Frontend entry: `http://localhost:5173`
+- `backend/uploads/` is ignored by Git and used for uploaded files.
+
+## Security & PDPA Features
+
+- Role-based access control: `student`, `lecturer`, `admin`
+- JWT authentication and password hashing
+- File upload validation and storage controls
+- Audit logs for actions and grade access
+- Student data export and deletion request functionality
+- PDPA policy page available at `/pdpa-policy`
