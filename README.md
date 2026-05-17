@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # AssessHub - Secure Student Assessment Platform
 
 A full-stack PDPA-compliant academic assessment platform.
@@ -151,3 +152,7 @@ assessment-platform/
 - Breach notification page (simulated via console.log in dev)
 - Data retention purge with configurable period
 - PDPA Policy page at `/pdpa-policy`
+=======
+# DbSec_CCS6344
+Database Security
+>>>>>>> 8010fd2939c75082d2a806598434ac476557a7c1
