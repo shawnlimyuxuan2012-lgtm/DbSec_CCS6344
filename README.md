@@ -16,6 +16,13 @@ A full-stack academic assessment platform with PDPA-safe controls for students, 
 - Node.js 18+
 - SQL Server / Azure SQL
 
+### 0. Clone the repository
+
+```bash
+git clone https://github.com/shawnlimyuxuan2012-lgtm/DbSec_CCS6344.git
+cd DbSec_CCS6344
+```
+
 ### 1. Install dependencies
 
 From the repository root:
