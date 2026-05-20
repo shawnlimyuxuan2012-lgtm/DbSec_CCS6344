@@ -17,7 +17,7 @@ const PDPAPolicy = () => (
         },
         {
           title: '2. Data We Collect',
-          content: 'We collect: Full name, Email address, Password (stored as a bcrypt hash — never in plaintext), Assignment submissions and files, Grade records, IP addresses for security logging, Consent timestamps.',
+          content: 'We collect: Full name, Email address, Password (stored as a salted SHA-256 password hash — never in plaintext), Assignment submissions and files, Grade records, IP addresses for security logging, Consent timestamps.',
         },
         {
           title: '3. Purpose of Collection',
@@ -33,7 +33,7 @@ const PDPAPolicy = () => (
         },
         {
           title: '6. Data Security',
-          content: 'We implement: bcrypt password hashing (cost factor 12), JWT-based authentication with expiry, Role-based access control, Comprehensive audit logging, File upload restrictions and validation.',
+          content: 'We implement: salted PBKDF2-HMAC-SHA-256 password hashing, JWT-based authentication with expiry, Role-based access control, Comprehensive audit logging, File upload restrictions and validation.',
         },
         {
           title: '7. Data Breach Notification',

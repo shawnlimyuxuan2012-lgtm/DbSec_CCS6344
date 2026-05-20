@@ -33,9 +33,9 @@ import ExamSubmissionsView from './pages/lecturer/ExamSubmissionsView';
 import ExamSubmissionGrade from './pages/lecturer/ExamSubmissionGrade';
 
 // Admin pages
-import { AdminDashboard, ManageUsers } from './pages/admin/Dashboard';
+import AdminDashboard from './pages/admin/Dashboard';
+import ManageUsers from './pages/admin/ManageUsers';
 import AuditLogs from './pages/admin/AuditLogs';
-import BreachNotification from './pages/admin/BreachNotification';
 import DataRetention from './pages/admin/DataRetention';
 
 const HomeRedirect = () => {
@@ -88,7 +88,6 @@ function App() {
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/admin/manage-users" element={<ManageUsers />} />
             <Route path="/admin/audit-logs" element={<AuditLogs />} />
-            <Route path="/admin/breach-notification" element={<BreachNotification />} />
             <Route path="/admin/data-retention" element={<DataRetention />} />
           </Route>
 

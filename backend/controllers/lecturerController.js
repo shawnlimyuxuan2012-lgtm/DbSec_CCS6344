@@ -1,14 +1,9 @@
 const { getPool, sql } = require("../config/db");
-const {
-  ensureAcademicSchema,
-  generateJoinCode,
-} = require("../config/academicSchema");
+const { generateJoinCode } = require("../utils/generateCode");
 const { logAction, logGradeAccess } = require("../middleware/auth");
 
 const ensure = async () => {
-  const pool = await getPool();
-  await ensureAcademicSchema(pool);
-  return pool;
+  return await getPool();
 };
 
 // GET /api/lecturer/classes

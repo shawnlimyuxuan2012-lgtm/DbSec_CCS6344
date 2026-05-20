@@ -21,7 +21,7 @@ const Register = () => {
         password: form.password, pdpa_consent: true,
       });
       setSuccess('Registration successful! Redirecting to login…');
-      setTimeout(() => navigate('/login'), 2000);
+      setTimeout(() => navigate('/login'), 3000);
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed');
     } finally {

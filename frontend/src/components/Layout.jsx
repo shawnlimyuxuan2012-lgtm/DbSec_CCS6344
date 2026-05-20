@@ -11,7 +11,6 @@ const icons = {
   courses: '📚',
   users: '👥',
   audit: '🗒️',
-  breach: '🚨',
   retention: '🗑️',
 };
 
@@ -36,7 +35,6 @@ const adminLinks = [
   { to: '/admin/dashboard', label: 'Dashboard', icon: icons.dashboard },
   { to: '/admin/manage-users', label: 'Manage Users', icon: icons.users },
   { to: '/admin/audit-logs', label: 'Audit Logs', icon: icons.audit },
-  { to: '/admin/breach-notification', label: 'Breach Notify', icon: icons.breach },
   { to: '/admin/data-retention', label: 'Data Retention', icon: icons.retention },
 ];
 

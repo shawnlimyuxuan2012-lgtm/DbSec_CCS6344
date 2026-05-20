@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../../utils/api';
 import Layout from '../../components/Layout';
 
-export const SubmissionHistory = () => {
+const SubmissionHistory = () => {
   const [submissions, setSubmissions] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -62,3 +62,4 @@ export const SubmissionHistory = () => {
     </Layout>
   );
 };
+export default SubmissionHistory;

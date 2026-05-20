@@ -114,7 +114,7 @@ export const SubmissionDetail = () => {
           <p className="label">File</p>
           <p className="text-sm text-slate-200 font-mono mb-2">{submission.original_name}</p>
           {submission.file_path ? (
-            <a href={getFileUrl(submission.file_path)} className="btn-primary text-sm" download>
+            <a href={getFileUrl(submission.file_path)} className="btn-primary text-sm" download={submission.original_name}>
               Download file
             </a>
           ) : (

@@ -54,16 +54,26 @@ const ManageUsers = () => {
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDeactivate = async (id) => {
     if (!confirm('Deactivate this user?')) return;
-    await api.delete(`/admin/users/${id}`);
+    await api.patch(`/admin/users/${id}`);
     load();
+  };
+
+  const handleDeletePermanent = async (id) => {
+    if (!confirm('Permanently delete this user? This cannot be undone!')) return;
+    try {
+      await api.delete(`/admin/users/${id}`);
+      load();
+    } catch (err) {
+      alert('Access Denied: You do not have permission to permanently delete users.\n\nDatabase DELETE permission is restricted for security reasons.');
+    }
   };
 
   const filtered = users.filter(u => {
     if (filter === 'all') return true;
     if (filter === 'active') return !u.is_deleted;
-    if (filter === 'deleted') return u.is_deleted;
+    if (filter === 'deactivated') return u.is_deleted;
     if (filter === 'pending') return u.delete_requested_at;
     return u.role === filter;
   });
@@ -78,7 +88,7 @@ const ManageUsers = () => {
       </div>
 
       <div className="flex gap-2 mb-5 flex-wrap">
-        {['all','active','student','lecturer','admin','pending','deleted'].map(f => (
+        {['all','active','student','lecturer','admin','pending','deactivated'].map(f => (
           <button key={f} onClick={() => setFilter(f)}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all capitalize
               ${filter === f ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-400 hover:text-slate-200'}`}>
@@ -167,8 +177,10 @@ const ManageUsers = () => {
                 <td className="px-5 py-4">
                   <div className="flex gap-2">
                     <button onClick={() => openEdit(u)} className="text-xs btn-secondary px-3 py-1.5">Edit</button>
-                    {!u.is_deleted && (
-                      <button onClick={() => handleDelete(u.id)} className="text-xs btn-danger px-3 py-1.5">Deactivate</button>
+                    {!u.is_deleted ? (
+                      <button onClick={() => handleDeactivate(u.id)} className="text-xs btn-danger px-3 py-1.5">Deactivate</button>
+                    ) : (
+                      <button onClick={() => handleDeletePermanent(u.id)} className="text-xs bg-red-700 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg">Delete Permanently</button>
                     )}
                   </div>
                 </td>

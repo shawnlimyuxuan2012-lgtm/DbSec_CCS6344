@@ -47,7 +47,7 @@ const StudentGrades = () => {
                     <p className="text-xs text-slate-600 mt-1">Graded {new Date(g.graded_at).toLocaleDateString()}</p>
                   </div>
                   <div className="text-right">
-                    <span className={`text-4xl font-black font-display text-${color}-400`}>{g.score !== null && g.score !== undefined ? g.score : '—'}</span>
+                    <span className={`text-2xl text-${color}-400`}>{g.score !== null && g.score !== undefined ? g.score : '—'}</span>
                     <span className="text-slate-500 text-sm"> / {g.max_score}</span>
                     <p className="text-xs text-slate-500 mt-1">{g.score !== null && g.score !== undefined ? `${pct}%` : 'Pending'}</p>
                   </div>

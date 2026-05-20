@@ -6,7 +6,12 @@
     "install:all": "cd backend && npm install && cd ../frontend && npm install",
     "dev:backend": "cd backend && npm run dev",
     "dev:frontend": "cd frontend && npm run dev",
-    "start:backend": "cd backend && npm start"
+    "start:backend": "cd backend && node server.js",
+    "start:frontend": "cd frontend && npx vite --host",
+    "start": "npx concurrently \"npm run start:backend\" \"npm run start:frontend\""
   },
-  "workspaces": ["backend", "frontend"]
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "vite-plugin-mkcert": "^1.17.12"
+  }
 }

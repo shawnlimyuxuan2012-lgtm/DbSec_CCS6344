@@ -64,11 +64,11 @@ const Login = () => {
 
           <div className="mt-6 rounded-2xl border border-slate-800/60 bg-slate-950/80 p-4 text-sm text-slate-300">
             <p className="text-slate-400 text-xs uppercase tracking-[0.2em] mb-2">Test accounts</p>
-            <p className="font-medium">Password for all accounts: <span className="text-indigo-300">password123</span></p>
+            <p className="font-medium">Password for all accounts: <span className="text-indigo-300">MmuPass2026!</span></p>
             <div className="mt-3 space-y-2">
-              <div className="flex justify-between"><span className="font-semibold">Admin</span><span className="text-slate-400">admin@assessment.com</span></div>
-              <div className="flex justify-between"><span className="font-semibold">Lecturer</span><span className="text-slate-400">lecturer@assessment.com</span></div>
-              <div className="flex justify-between"><span className="font-semibold">Student</span><span className="text-slate-400">student@assessment.com</span></div>
+              <div className="flex justify-between"><span className="font-semibold">Admin</span><span className="text-slate-400">admin@mmu.edu.my</span></div>
+              <div className="flex justify-between"><span className="font-semibold">Lecturer</span><span className="text-slate-400">lecturer@mmu.edu.my</span></div>
+              <div className="flex justify-between"><span className="font-semibold">Student</span><span className="text-slate-400">student@mmu.edu.my</span></div>
             </div>
           </div>
 

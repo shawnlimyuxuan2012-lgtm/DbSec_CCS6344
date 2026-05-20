@@ -1,13 +1,10 @@
 const path = require("path");
 const fs = require("fs");
 const { getPool, sql } = require("../config/db");
-const { ensureAcademicSchema } = require("../config/academicSchema");
 const { logAction, logGradeAccess } = require("../middleware/auth");
 
 const ensure = async () => {
-  const pool = await getPool();
-  await ensureAcademicSchema(pool);
-  return pool;
+  return await getPool();
 };
 
 // GET /api/student/classes
@@ -281,15 +278,13 @@ const submitExam = async (req, res) => {
       { exam_id: req.params.id },
       req.ip,
     );
-    res
-      .status(201)
-      .json({
-        message: hasManualQuestions
-          ? "Exam submitted for review"
-          : "Exam submitted",
-        id: submissionId,
-        score: hasManualQuestions ? null : autoScore,
-      });
+    res.status(201).json({
+      message: hasManualQuestions
+        ? "Exam submitted for review"
+        : "Exam submitted",
+      id: submissionId,
+      score: hasManualQuestions ? null : autoScore,
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Failed to submit exam" });
@@ -442,11 +437,9 @@ const submitAssignment = async (req, res) => {
       null,
       req.ip,
     );
-    res
-      .status(201)
-      .json({
-        message: isLate ? "Submitted (late)" : "Submitted successfully",
-      });
+    res.status(201).json({
+      message: isLate ? "Submitted (late)" : "Submitted successfully",
+    });
   } catch (err) {
     if (req.file)
       try {

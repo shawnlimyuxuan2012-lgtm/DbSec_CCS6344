@@ -1,10 +1,8 @@
-const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
 const { getPool, sql } = require('../config/db');
 const { logAction } = require('../middleware/auth');
-
-const SALT_ROUNDS = 12;
+const { hashPassword, verifyPassword } = require('../utils/passwordHash');
 
 // POST /api/auth/register
 const register = async (req, res) => {
@@ -30,7 +28,7 @@ const register = async (req, res) => {
       return res.status(409).json({ message: 'Email already registered' });
     }
 
-    const hash = await bcrypt.hash(password, SALT_ROUNDS);
+    const hash = await hashPassword(password);
     const result = await pool.request()
       .input('name', sql.NVarChar, name)
       .input('email', sql.NVarChar, email)
@@ -70,7 +68,7 @@ const login = async (req, res) => {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    const match = await bcrypt.compare(password, user.password_hash);
+    const match = await verifyPassword(password, user.password_hash);
     if (!match) {
       await logAction(user.id, 'LOGIN_FAILED', 'users', user.id, null, req.ip);
       return res.status(401).json({ message: 'Invalid credentials' });
@@ -158,7 +156,7 @@ const resetPassword = async (req, res) => {
     }
 
     const reset = result.recordset[0];
-    const hash = await bcrypt.hash(password, SALT_ROUNDS);
+    const hash = await hashPassword(password);
 
     await pool.request()
       .input('hash', sql.NVarChar, hash)

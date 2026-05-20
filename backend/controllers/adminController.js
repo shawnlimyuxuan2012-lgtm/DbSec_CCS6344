@@ -1,6 +1,6 @@
-const bcrypt = require("bcrypt");
 const { getPool, sql, auditFilePath } = require("../config/db");
 const { logAction } = require("../middleware/auth");
+const { hashPassword } = require("../utils/passwordHash");
 
 // GET /api/admin/users
 const getUsers = async (req, res) => {
@@ -39,7 +39,7 @@ const createUser = async (req, res) => {
       return res.status(409).json({ message: "Email already exists" });
     }
 
-    const hash = await bcrypt.hash(password, 12);
+    const hash = await hashPassword(password);
     const result = await pool
       .request()
       .input("name", sql.NVarChar, name)
@@ -97,7 +97,7 @@ const updateUser = async (req, res) => {
 };
 
 // DELETE /api/admin/users/:id (soft delete)
-const deleteUser = async (req, res) => {
+const deactivateUser = async (req, res) => {
   try {
     const pool = await getPool();
     await pool
@@ -109,7 +109,7 @@ const deleteUser = async (req, res) => {
 
     await logAction(
       req.user.id,
-      "ADMIN_DELETE_USER",
+      "ADMIN_DEACTIVATE_USER",
       "users",
       req.params.id,
       null,
@@ -119,6 +119,33 @@ const deleteUser = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Failed to delete user" });
+  }
+};
+// DELETE /api/admin/users/:id/permanent (hard delete - permanent removal)
+const deleteUser = async (req, res) => {
+  try {
+    const pool = await getPool();
+    const result = await pool
+      .request()
+      .input("id", sql.Int, req.params.id)
+      .query("DELETE FROM users WHERE id=@id");
+
+    if (result.rowsAffected[0] === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    await logAction(
+      req.user.id,
+      "ADMIN_DELETE_USER",
+      "users",
+      req.params.id,
+      null,
+      req.ip,
+    );
+    res.json({ message: "User permanently deleted" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to permanently delete user" });
   }
 };
 
@@ -298,8 +325,8 @@ module.exports = {
   getUsers,
   createUser,
   updateUser,
+  deactivateUser,
   deleteUser,
   getAuditLogs,
-  breachNotify,
   purgeRecords,
 };
