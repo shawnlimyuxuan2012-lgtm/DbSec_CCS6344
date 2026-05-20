@@ -14,7 +14,7 @@ A full-stack academic assessment platform with PDPA-safe controls for students, 
 ### Requirements
 
 - Node.js 18+
-- SQL Server / Azure SQL
+- Microsoft SQL Server
 
 ### 1. Clone the repository
 
