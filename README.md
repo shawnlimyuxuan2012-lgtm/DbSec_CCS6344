@@ -48,8 +48,8 @@ Then execute the SQL files in this order:
 
 - `schema_setup.sql` (tables schema)
 - `RBAC.sql` (role-based access control)
-- `security_test.sql` (security configurations)
 - `audit_config.sql` (audit logging setup)
+- `security_test.sql` (security configurations)
 
 ### 4. Backend setup
 
@@ -71,8 +71,8 @@ npm start
 
 Or start them individually:
 
-- **Backend only**: `npm run start:backend` or `npm run dev:backend`
-- **Frontend only**: `npm run start:frontend` or `npm run dev:frontend`
+- **Backend only**: `npm run start:backend`
+- **Frontend only**: `npm run start:frontend`
 
 Default frontend URL: `http://localhost:5173`
 
