@@ -38,12 +38,6 @@ cd ..
 
 ### 3. Database setup
 
-Create the database and run the SQL schema files.
-
-```sql
-CREATE DATABASE SecureStudentDB;
-```
-
 Then execute the SQL files in this order:
 
 - `schema_setup.sql` (tables schema)
