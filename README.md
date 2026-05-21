@@ -29,8 +29,10 @@ From the repository root:
 
 ```bash
 npm install
-cd backend && npm install
-cd ../frontend && npm install
+cd backend
+npm install
+cd ../frontend
+npm install
 cd ..
 ```
 
@@ -58,6 +60,8 @@ cd backend
 cp .env.example .env
 cd ..
 ```
+
+Open `backend/.env` and fill in values.
 
 ### 5. Running the App
 
@@ -87,8 +91,6 @@ Use the following test accounts to log in quickly:
   - Password: `MmuPass2026!`
 
 ## Environment Variables
-
-Copy `backend/.env.example` to `backend/.env` and fill in values.
 
 Required values:
 
