@@ -184,7 +184,7 @@ CREATE TABLE password_reset_tokens (
 );
 GO
 
-TEST ACCOUNTS (Password for all: MmuPass2026!)
+-- TEST ACCOUNTS (Password for all: MmuPass2026!)
 
 INSERT INTO users (name, email, password_hash, role, pdpa_consent, is_deleted)
 VALUES 
