@@ -188,7 +188,7 @@ TEST ACCOUNTS (Password for all: MmuPass2026!)
 
 INSERT INTO users (name, email, password_hash, role, pdpa_consent, is_deleted)
 VALUES 
-('System Administrator', 'admin@mmu.edu.my', 'e9b9868f763f0343a4130097f4cf91d842247fb6f610e19e075037d0c35476a6', 'admin', 1, 0),
-('Prof. Ahmad', 'lecturer@mmu.edu.my', 'e9b9868f763f0343a4130097f4cf91d842247fb6f610e19e075037d0c35476a6', 'lecturer', 1, 0),
-('Lim Yong Shian', 'student@mmu.edu.my', 'e9b9868f763f0343a4130097f4cf91d842247fb6f610e19e075037d0c35476a6', 'student', 1, 0);
+('System Administrator', 'admin@mmu.edu.my', 'pbkdf2_sha256$210000$7wF9UhDXI41mPeFhYKhQCg$sEw-ugoXjT7e89Go0A7GgnxJb-z2x_EnBJnCNsnE8yA', 'admin', 1, 0),
+('Prof. Ahmad', 'lecturer@mmu.edu.my', 'pbkdf2_sha256$210000$7wF9UhDXI41mPeFhYKhQCg$sEw-ugoXjT7e89Go0A7GgnxJb-z2x_EnBJnCNsnE8yA', 'lecturer', 1, 0),
+('Lim Yong Shian', 'student@mmu.edu.my', 'pbkdf2_sha256$210000$7wF9UhDXI41mPeFhYKhQCg$sEw-ugoXjT7e89Go0A7GgnxJb-z2x_EnBJnCNsnE8yA', 'student', 1, 0);
 GO
