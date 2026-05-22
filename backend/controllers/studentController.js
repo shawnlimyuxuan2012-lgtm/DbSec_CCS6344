@@ -4,7 +4,7 @@ const { getPool, sql } = require("../config/db");
 const { logAction, logGradeAccess } = require("../middleware/auth");
 
 const ensure = async () => {
-  return await getPool();
+  return await getPool("student");
 };
 
 // GET /api/student/classes
@@ -71,6 +71,7 @@ const joinClass = async (req, res) => {
       classInfo.id,
       null,
       req.ip,
+      req.user.role,
     );
     res.json({ message: "Class added", class: classInfo });
   } catch (err) {
@@ -277,6 +278,7 @@ const submitExam = async (req, res) => {
       submissionId,
       { exam_id: req.params.id },
       req.ip,
+      req.user.role,
     );
     res.status(201).json({
       message: hasManualQuestions
@@ -412,6 +414,7 @@ const submitAssignment = async (req, res) => {
         existing.recordset[0].id,
         null,
         req.ip,
+        req.user.role,
       );
       return res.json({ message: "Assignment resubmitted successfully" });
     }
@@ -436,6 +439,7 @@ const submitAssignment = async (req, res) => {
       result.recordset[0].id,
       null,
       req.ip,
+      req.user.role,
     );
     res.status(201).json({
       message: isLate ? "Submitted (late)" : "Submitted successfully",
@@ -543,7 +547,15 @@ const downloadData = async (req, res) => {
       notice: "This data is provided under PDPA Section 30 data access rights.",
     };
 
-    await logAction(userId, "DOWNLOAD_DATA", "users", userId, null, req.ip);
+    await logAction(
+      userId,
+      "DOWNLOAD_DATA",
+      "users",
+      userId,
+      null,
+      req.ip,
+      req.user.role,
+    );
 
     res.setHeader("Content-Type", "application/json");
     res.setHeader(

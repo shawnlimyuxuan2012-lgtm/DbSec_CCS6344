@@ -2,10 +2,14 @@ const { getPool, sql, auditFilePath } = require("../config/db");
 const { logAction } = require("../middleware/auth");
 const { hashPassword } = require("../utils/passwordHash");
 
+const ensure = async () => {
+  return await getPool("admin");
+};
+
 // GET /api/admin/users
 const getUsers = async (req, res) => {
   try {
-    const pool = await getPool();
+    const pool = await ensure();
     const result = await pool.request().query(
       `SELECT id, name, email, role, pdpa_consent, is_deleted,
               delete_requested_at, created_at FROM users ORDER BY created_at DESC`,
@@ -29,7 +33,7 @@ const createUser = async (req, res) => {
   }
 
   try {
-    const pool = await getPool();
+    const pool = await ensure();
     const existing = await pool
       .request()
       .input("email", sql.NVarChar, email)
@@ -57,6 +61,7 @@ const createUser = async (req, res) => {
       id,
       { email, role },
       req.ip,
+      req.user.role,
     );
     res.status(201).json({ message: "User created", id });
   } catch (err) {
@@ -70,7 +75,7 @@ const updateUser = async (req, res) => {
   const { name, email, role, is_deleted } = req.body;
 
   try {
-    const pool = await getPool();
+    const pool = await ensure();
     await pool
       .request()
       .input("name", sql.NVarChar, name)
@@ -88,6 +93,7 @@ const updateUser = async (req, res) => {
       req.params.id,
       { name, role },
       req.ip,
+      req.user.role,
     );
     res.json({ message: "User updated" });
   } catch (err) {
@@ -99,7 +105,7 @@ const updateUser = async (req, res) => {
 // DELETE /api/admin/users/:id (soft delete)
 const deactivateUser = async (req, res) => {
   try {
-    const pool = await getPool();
+    const pool = await ensure();
     await pool
       .request()
       .input("id", sql.Int, req.params.id)
@@ -114,6 +120,7 @@ const deactivateUser = async (req, res) => {
       req.params.id,
       null,
       req.ip,
+      req.user.role,
     );
     res.json({ message: "User deactivated" });
   } catch (err) {
@@ -124,7 +131,7 @@ const deactivateUser = async (req, res) => {
 // DELETE /api/admin/users/:id/permanent (hard delete - permanent removal)
 const deleteUser = async (req, res) => {
   try {
-    const pool = await getPool();
+    const pool = await ensure();
     const result = await pool
       .request()
       .input("id", sql.Int, req.params.id)
@@ -141,6 +148,7 @@ const deleteUser = async (req, res) => {
       req.params.id,
       null,
       req.ip,
+      req.user.role,
     );
     res.json({ message: "User permanently deleted" });
   } catch (err) {
@@ -155,7 +163,7 @@ const getAuditLogs = async (req, res) => {
   const offset = (parseInt(page) - 1) * parseInt(limit);
 
   try {
-    const pool = await getPool();
+    const pool = await ensure();
 
     if (type === "sqlserver") {
       const result = await pool
@@ -227,56 +235,12 @@ const getAuditLogs = async (req, res) => {
   }
 };
 
-// POST /api/admin/breach-notify
-const breachNotify = async (req, res) => {
-  const { subject, message, affected_users } = req.body;
-
-  try {
-    const pool = await getPool();
-
-    let users = [];
-    if (affected_users === "all") {
-      const usersRes = await pool
-        .request()
-        .query("SELECT email, name FROM users WHERE is_deleted = 0");
-      users = usersRes.recordset;
-    }
-
-    // Simulate email
-    console.log("\n🚨 BREACH NOTIFICATION EMAIL (simulated)");
-    console.log(`Subject: ${subject}`);
-    console.log(`Message: ${message}`);
-    console.log(
-      `Recipients (${users.length || "specified"}):`,
-      users.map((u) => u.email).join(", ") || affected_users,
-    );
-    console.log("---\n");
-
-    await logAction(
-      req.user.id,
-      "BREACH_NOTIFICATION",
-      "system",
-      null,
-      { subject, affected: affected_users },
-      req.ip,
-    );
-
-    res.json({
-      message: "Breach notification sent (simulated via console log)",
-      recipients: users.length,
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Failed to send breach notification" });
-  }
-};
-
 // DELETE /api/admin/purge-records
 const purgeRecords = async (req, res) => {
   const { days = 365 } = req.body;
 
   try {
-    const pool = await getPool();
+    const pool = await ensure();
     const cutoff = new Date(Date.now() - parseInt(days) * 24 * 60 * 60 * 1000);
 
     // Hard delete old audit logs
@@ -308,6 +272,7 @@ const purgeRecords = async (req, res) => {
         usersDeleted: usersRes.rowsAffected[0],
       },
       req.ip,
+      req.user.role,
     );
 
     res.json({

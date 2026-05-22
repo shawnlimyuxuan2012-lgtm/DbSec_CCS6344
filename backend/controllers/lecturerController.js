@@ -3,7 +3,7 @@ const { generateJoinCode } = require("../utils/generateCode");
 const { logAction, logGradeAccess } = require("../middleware/auth");
 
 const ensure = async () => {
-  return await getPool();
+  return await getPool("lecturer");
 };
 
 // GET /api/lecturer/classes
@@ -119,6 +119,7 @@ const createClass = async (req, res) => {
       created.id,
       { name, course_code },
       req.ip,
+      req.user.role,
     );
     res.status(201).json({ message: "Class created", class: created });
   } catch (err) {
@@ -174,6 +175,7 @@ const addStudentToClass = async (req, res) => {
       req.params.id,
       { student_id: student.id },
       req.ip,
+      req.user.role,
     );
     res.json({ message: "Student added to class", student });
   } catch (err) {
@@ -217,6 +219,7 @@ const removeStudentFromClass = async (req, res) => {
       req.params.id,
       { student_id: req.params.studentId },
       req.ip,
+      req.user.role,
     );
     res.json({ message: "Student removed from class" });
   } catch (err) {
@@ -310,6 +313,7 @@ const createAssignment = async (req, res) => {
       id,
       { title },
       req.ip,
+      req.user.role,
     );
     res.status(201).json({ message: "Assignment created", id });
   } catch (err) {
@@ -383,6 +387,7 @@ const updateAssignment = async (req, res) => {
       req.params.id,
       { title },
       req.ip,
+      req.user.role,
     );
     res.json({ message: "Assignment updated" });
   } catch (err) {
@@ -416,6 +421,7 @@ const deleteAssignment = async (req, res) => {
       req.params.id,
       null,
       req.ip,
+      req.user.role,
     );
     res.json({ message: "Assignment deleted" });
   } catch (err) {
@@ -520,6 +526,7 @@ const createGrade = async (req, res) => {
       gradeId,
       { submission_id, score },
       req.ip,
+      req.user.role,
     );
     await logGradeAccess(req.user.id, gradeId, "CREATE", req.ip);
 
@@ -559,12 +566,14 @@ const updateGrade = async (req, res) => {
       req.params.id,
       { score },
       req.ip,
+      req.user.role,
     );
     await logGradeAccess(
       req.user.id,
       parseInt(req.params.id),
       "UPDATE",
       req.ip,
+      req.user.role,
     );
     res.json({ message: "Grade updated" });
   } catch (err) {
@@ -794,6 +803,7 @@ const gradeExamSubmission = async (req, res) => {
       req.params.submissionId,
       { score: calculatedScore },
       req.ip,
+      req.user.role,
     );
     res.json({ message: "Exam submission graded", score: calculatedScore });
   } catch (err) {
@@ -929,6 +939,7 @@ const updateExam = async (req, res) => {
       req.params.id,
       { deadline },
       req.ip,
+      req.user.role,
     );
 
     res.json({ message: "Exam deadline updated" });
@@ -1007,6 +1018,7 @@ const createExam = async (req, res) => {
       examId,
       { title, class_id },
       req.ip,
+      req.user.role,
     );
     res.status(201).json({ message: "Exam created", id: examId });
   } catch (err) {
@@ -1058,6 +1070,7 @@ const addExamQuestion = async (req, res) => {
       result.recordset[0].id,
       { exam_id: req.params.id },
       req.ip,
+      req.user.role,
     );
     res
       .status(201)
@@ -1116,6 +1129,7 @@ const updateExamQuestion = async (req, res) => {
       req.params.questionId,
       { exam_id: req.params.id },
       req.ip,
+      req.user.role,
     );
     res.json({ message: "Question updated" });
   } catch (err) {
@@ -1153,6 +1167,7 @@ const deleteExamQuestion = async (req, res) => {
       req.params.questionId,
       { exam_id: req.params.id },
       req.ip,
+      req.user.role,
     );
     res.json({ message: "Question removed" });
   } catch (err) {

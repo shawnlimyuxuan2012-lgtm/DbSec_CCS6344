@@ -1,4 +1,5 @@
 require("dotenv").config();
+const { initPools } = require("./config/db");
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
@@ -66,8 +67,15 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`\n🚀 Server running on http://localhost:${PORT}`);
-  console.log(`📁 Upload path: ${process.env.UPLOAD_PATH || "./uploads"}`);
-  console.log(`🌍 Environment: ${process.env.NODE_ENV || "development"}\n`);
-});
+initPools()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`\n🚀 Server running on http://localhost:${PORT}`);
+      console.log(`📁 Upload path: ${process.env.UPLOAD_PATH || "./uploads"}`);
+      console.log(`🌍 Environment: ${process.env.NODE_ENV || "development"}\n`);
+    });
+  })
+  .catch((err) => {
+    console.error("Failed to initialize DB pools:", err);
+    process.exit(1);
+  });
