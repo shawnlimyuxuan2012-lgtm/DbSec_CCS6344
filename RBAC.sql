@@ -196,10 +196,10 @@ DENY SELECT ON dbo.users(pdpa_consent)  TO Role_AuditReader;
 GO
 
 -- ============================================================
--- 8. STORED PROCEDURES (optional but recommended)
+-- 8. STORED PROCEDURES
 -- ============================================================
 
--- 8a. sp_GetMyProfile – students/lecturers fetch their own row safely
+-- sp_GetMyProfile – students/lecturers fetch their own row safely
 IF OBJECT_ID('dbo.sp_GetMyProfile', 'P') IS NOT NULL
     DROP PROCEDURE dbo.sp_GetMyProfile;
 GO
@@ -217,7 +217,7 @@ GRANT EXECUTE ON dbo.sp_GetMyProfile TO Role_Student;
 GRANT EXECUTE ON dbo.sp_GetMyProfile TO Role_Lecturer;
 GO
 
--- 8b. sp_GetMyGrades – student sees only own grades
+-- sp_GetMyGrades – student sees only own grades
 IF OBJECT_ID('dbo.sp_GetMyGrades', 'P') IS NOT NULL
     DROP PROCEDURE dbo.sp_GetMyGrades;
 GO
@@ -237,7 +237,7 @@ GO
 GRANT EXECUTE ON dbo.sp_GetMyGrades TO Role_Student;
 GO
 
--- 8c. sp_SoftDeleteUser – admin soft-deletes a user
+-- sp_SoftDeleteUser – admin soft-deletes a user
 IF OBJECT_ID('dbo.sp_SoftDeleteUser', 'P') IS NOT NULL
     DROP PROCEDURE dbo.sp_SoftDeleteUser;
 GO
@@ -254,6 +254,7 @@ GO
 GRANT EXECUTE ON dbo.sp_SoftDeleteUser TO Role_Admin;
 GO
 
+-- sp_AuthenticateUser – auth user login
 IF OBJECT_ID('dbo.sp_AuthenticateUser', 'P') IS NOT NULL
     DROP PROCEDURE dbo.sp_AuthenticateUser;
 GO
