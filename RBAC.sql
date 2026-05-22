@@ -217,26 +217,6 @@ GRANT EXECUTE ON dbo.sp_GetMyProfile TO Role_Student;
 GRANT EXECUTE ON dbo.sp_GetMyProfile TO Role_Lecturer;
 GO
 
--- sp_GetMyGrades – student sees only own grades
-IF OBJECT_ID('dbo.sp_GetMyGrades', 'P') IS NOT NULL
-    DROP PROCEDURE dbo.sp_GetMyGrades;
-GO
-CREATE PROCEDURE dbo.sp_GetMyGrades
-    @studentId INT
-AS
-BEGIN
-    SET NOCOUNT ON;
-    SELECT g.id, g.score, g.feedback, g.graded_at,
-           a.title AS assignment_title, a.course_code, a.max_score
-    FROM   dbo.grades       g
-    JOIN   dbo.submissions  s ON s.id = g.submission_id
-    JOIN   dbo.assignments  a ON a.id = s.assignment_id
-    WHERE  s.student_id = @studentId;
-END;
-GO
-GRANT EXECUTE ON dbo.sp_GetMyGrades TO Role_Student;
-GO
-
 -- sp_SoftDeleteUser – admin soft-deletes a user
 IF OBJECT_ID('dbo.sp_SoftDeleteUser', 'P') IS NOT NULL
     DROP PROCEDURE dbo.sp_SoftDeleteUser;
@@ -252,6 +232,24 @@ BEGIN
 END;
 GO
 GRANT EXECUTE ON dbo.sp_SoftDeleteUser TO Role_Admin;
+GO
+
+-- sp_HardDeleteUser – admin permanently deletes a user
+IF OBJECT_ID('dbo.sp_HardDeleteUser', 'P') IS NOT NULL
+    DROP PROCEDURE dbo.sp_HardDeleteUser;
+GO
+
+CREATE PROCEDURE dbo.sp_HardDeleteUser
+    @targetId INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DELETE FROM dbo.users
+    WHERE id = @targetId;
+END;
+GO
+
+GRANT EXECUTE ON dbo.sp_HardDeleteUser TO Role_Admin;
 GO
 
 -- sp_AuthenticateUser – auth user login
