@@ -108,10 +108,8 @@ const deactivateUser = async (req, res) => {
     const pool = await ensure();
     await pool
       .request()
-      .input("id", sql.Int, req.params.id)
-      .query(
-        `UPDATE users SET is_deleted=1, updated_at=GETDATE() WHERE id=@id`,
-      );
+      .input("targetId", sql.Int, req.params.id)
+      .execute("sp_SoftDeleteUser");
 
     await logAction(
       req.user.id,
@@ -135,7 +133,7 @@ const deleteUser = async (req, res) => {
     const result = await pool
       .request()
       .input("id", sql.Int, req.params.id)
-      .query("DELETE FROM users WHERE id=@id");
+      .execute("sp_HardDeleteUser");
 
     if (result.rowsAffected[0] === 0) {
       return res.status(404).json({ message: "User not found" });
