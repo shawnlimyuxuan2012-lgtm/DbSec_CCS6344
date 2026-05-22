@@ -528,10 +528,8 @@ const downloadData = async (req, res) => {
 
     const userRes = await pool
       .request()
-      .input("id", sql.Int, userId)
-      .query(
-        "SELECT id, name, email, role, pdpa_consent, created_at FROM users WHERE id = @id",
-      );
+      .input("userId", sql.Int, userId)
+      .execute("sp_GetMyProfile");
 
     const submissionsRes = await pool.request().input("sid", sql.Int, userId)
       .query(`SELECT s.id, a.title, a.course_code, s.submitted_at, s.is_late,
