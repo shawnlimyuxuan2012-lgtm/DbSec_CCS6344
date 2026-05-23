@@ -508,9 +508,11 @@ const getGrades = async (req, res) => {
         ORDER BY graded_at DESC
       `);
 
-    // Log grade access
+    // Log grade access (only for actual grade records, not exam submission IDs)
     for (const row of result.recordset) {
-      await logGradeAccess(req.user.id, row.grade_id, "VIEW", req.ip);
+      if (row.record_type === "assignment") {
+        await logGradeAccess(req.user.id, row.grade_id, "VIEW", req.ip);
+      }
     }
 
     res.json(result.recordset);

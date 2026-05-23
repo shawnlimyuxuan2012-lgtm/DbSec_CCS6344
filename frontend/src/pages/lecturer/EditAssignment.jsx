@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import api from '../../utils/api';
+import api, { serverDatetimeToLocal } from '../../utils/api';
 import Layout from '../../components/Layout';
 import AssignmentForm from './AssignmentForm';
 
@@ -15,8 +15,7 @@ const EditAssignment = () => {
     api.get('/lecturer/courses').then(r => {
       const a = r.data.find(x => x.id === parseInt(id, 10));
       if (a) {
-        const d = new Date(a.deadline);
-        setInitial({ ...a, class_id: a.class_id || '', deadline: d.toISOString().slice(0, 16) });
+        setInitial({ ...a, class_id: a.class_id || '', deadline: serverDatetimeToLocal(a.deadline) });
       }
     }).catch(() => setError('Failed to load assignment'));
   }, [id]);

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import api from '../../utils/api';
+import api, { localDatetimeToISO, serverDatetimeToLocal } from '../../utils/api';
 import Layout from '../../components/Layout';
 
 const makeQuestion = () => ({ question_type: 'mcq', prompt: '', options: ['', '', '', ''], correct_answer: '', points: 1 });
@@ -72,7 +72,7 @@ const LecturerExamView = () => {
   const load = async () => {
     const { data } = await api.get(`/lecturer/exams/${id}`);
     setExam(data.exam);
-    setDeadline(data.exam.deadline ? new Date(data.exam.deadline).toISOString().slice(0,16) : '');
+    setDeadline(serverDatetimeToLocal(data.exam.deadline));
     setQuestions(data.questions.map(q => ({ ...q, options: q.options?.length ? q.options : ['', '', '', ''] })));
     setLoading(false);
   };
@@ -167,7 +167,7 @@ const LecturerExamView = () => {
     setError('');
     setMessage('');
     try {
-      await api.put(`/lecturer/exams/${id}`, { deadline });
+      await api.put(`/lecturer/exams/${id}`, { deadline: localDatetimeToISO(deadline) });
       setMessage('Exam deadline updated');
       await load();
     } catch (err) {

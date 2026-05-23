@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import api from '../../utils/api';
+import api, { localDatetimeToISO } from '../../utils/api';
 
 const AssignmentForm = ({ initial = {}, onSubmit, loading, title }) => {
   const [classes, setClasses] = useState([]);
@@ -34,7 +34,11 @@ const AssignmentForm = ({ initial = {}, onSubmit, loading, title }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit({ ...form, class_id: form.class_id || null });
+    onSubmit({
+      ...form,
+      deadline: localDatetimeToISO(form.deadline),
+      class_id: form.class_id || null,
+    });
   };
 
   return (
