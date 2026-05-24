@@ -132,7 +132,7 @@ const deleteUser = async (req, res) => {
     const pool = await ensure();
     const result = await pool
       .request()
-      .input("id", sql.Int, req.params.id)
+      .input("targetId", sql.Int, req.params.id)
       .execute("sp_HardDeleteUser");
 
     if (result.rowsAffected[0] === 0) {

@@ -244,8 +244,48 @@ CREATE PROCEDURE dbo.sp_HardDeleteUser
 AS
 BEGIN
     SET NOCOUNT ON;
-    DELETE FROM dbo.users
-    WHERE id = @targetId;
+
+    -- Delete dependent records first to avoid FK violations
+
+    -- audit_logs: delete audit trail for this user
+    DELETE FROM dbo.audit_logs WHERE user_id = @targetId;
+
+    -- grade_access_logs: delete grade access logs for this user
+    DELETE FROM dbo.grade_access_logs WHERE user_id = @targetId;
+
+    -- password_reset_tokens: delete any reset tokens
+    DELETE FROM dbo.password_reset_tokens WHERE user_id = @targetId;
+
+    -- class_students: remove from classes
+    DELETE FROM dbo.class_students WHERE student_id = @targetId;
+
+    -- exam_submissions and exam_answers: delete exam submissions and answers
+    DELETE ea FROM dbo.exam_answers ea
+    INNER JOIN dbo.exam_submissions es ON ea.submission_id = es.id
+    WHERE es.student_id = @targetId;
+    DELETE FROM dbo.exam_submissions WHERE student_id = @targetId;
+
+    -- submissions and grades: delete grades first, then submissions
+    DELETE g FROM dbo.grades g
+    INNER JOIN dbo.submissions s ON g.submission_id = s.id
+    WHERE s.student_id = @targetId;
+    DELETE FROM dbo.submissions WHERE student_id = @targetId;
+
+    -- exams/assignments/classes created by this user (lecturer): reassign or delete
+    -- For simplicity, delete exams and exam_questions
+    DELETE eq FROM dbo.exam_questions eq
+    INNER JOIN dbo.exams e ON eq.exam_id = e.id
+    WHERE e.lecturer_id = @targetId;
+    DELETE FROM dbo.exams WHERE lecturer_id = @targetId;
+
+    -- Delete assignments and their related records
+    DELETE FROM dbo.assignments WHERE lecturer_id = @targetId;
+
+    -- Delete classes
+    DELETE FROM dbo.classes WHERE lecturer_id = @targetId;
+
+    -- Delete the user
+    DELETE FROM dbo.users WHERE id = @targetId;
 END;
 GO
 
